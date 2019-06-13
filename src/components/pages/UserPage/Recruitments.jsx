@@ -46,6 +46,7 @@ class Recruitments extends Component {
 
     addInterview = async (index, dateAndTime) => {
         const recruitment = await interviewApi.createInterview(this.state.recruitments[index].id, dateAndTime);
+        console.log(recruitment);
         this.updateRecruitment(recruitment);
         this.addInterviewModalClose();
 
@@ -57,7 +58,7 @@ class Recruitments extends Component {
 
         recruitments[recruitments.findIndex(x => x.id === recruitment.id)] = recruitment;
 
-        this.setState(recruitments);
+        this.setState({recruitments});
     };
 
     acceptRecruitment = async (index) => {
@@ -142,7 +143,7 @@ class Recruitments extends Component {
         const {isHrManager, isCandidate} = this.props;
 
         return recruitments.map((recruitment, index) => {
-            const {jobOffer, candidate, testResultPercent, status, hrManager, linkToCV} = recruitment;
+            const {jobOffer, candidate, testResultPercent, status, hrManager, linkToCV, interviews} = recruitment;
             const {name: jobOfferName, position, description} = jobOffer;
             const {name: candidateName, surname, email, phone} = candidate;
 
@@ -151,7 +152,10 @@ class Recruitments extends Component {
             const isRefused = status === "REFUSED";
             const isCompleted = status === "COMPLETED";
 
-            return (<Segment key={index}>
+            console.log(recruitment);
+
+            return (<Segment key={index}
+                             color={isRefused ? "red" : isAccepted ? "blue" : isPending ? "yellow" : isCompleted ? "green" : ""}>
                 <Grid divided stackable>
                     <Grid.Row columns={2}>
                         <Grid.Column textAlign='center'>
@@ -166,7 +170,7 @@ class Recruitments extends Component {
                             <p>Email: {email}</p>
                             <p>Phone: {phone}</p>
                             <p>Tests result: {testResultPercent}%</p>
-                            {linkToCV && <p>Link to CV: {linkToCV}</p>}
+                            {linkToCV && <a href={`https://${linkToCV}`}>Link to CV</a>}
                         </Grid.Column>}
 
                         {isCandidate && hrManager && <Grid.Column textAlign='center'>
@@ -184,7 +188,8 @@ class Recruitments extends Component {
                         </Grid.Column>
                     </Grid.Row>}
 
-                    {isCandidate && isAccepted && <Grid.Row>
+                    {isCandidate && isAccepted && interviews.findIndex(interview => interview.status !== "REFUSED") === -1 &&
+                    <Grid.Row>
                         <Grid.Column textAlign='center'>
                             <Button index={index} size='big' fluid primary content={"Add interview"}
                                     onClick={this.addInterviewModalOpen}/>

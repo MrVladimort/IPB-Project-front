@@ -15,6 +15,9 @@ class Interviews extends Component {
         this.state = {
             loading: true,
             interviews: [],
+            teamLeads: [],
+            addAcceptModalOpen: false,
+            addAcceptModalData: {}
         }
     }
 
@@ -32,9 +35,9 @@ class Interviews extends Component {
     updateInterview = (interview) => {
         const interviews = this.state.interviews;
 
-        interview[interviews.findIndex(x => x.id === interview.id)] = interview;
+        interviews[interviews.findIndex(x => x.id === interview.id)] = interview;
 
-        this.setState(interview);
+        this.setState({interviews});
     };
 
     acceptInterview = async (interviewIndex, teamLeadIndex) => {
@@ -88,7 +91,7 @@ class Interviews extends Component {
 
         return interviews.map((interview, index) => {
             console.log(interview);
-            const {time, candidate, date, status, opinion, teamLead} = interview;
+            const {time, candidate, date, status, opinion, teamLead, jobOffer} = interview;
             const {name: candidateName, surname: candidateSurname, email: candidateEmail, phone: candidatePhone} = candidate;
 
             const isPending = status === "PENDING";
@@ -96,8 +99,19 @@ class Interviews extends Component {
             const isRefused = status === "REFUSED";
             const isCompleted = status === "COMPLETED";
 
-            return (<Segment key={index}>
-                <Grid divided stackable>
+            return (<Segment key={index} color={isRefused ? "red" : isAccepted ? "blue" : isPending ? "yellow" : isCompleted ? "green" : ""}>
+                <Grid celled='internally' stackable>
+                    <Grid.Row columns={3}>
+                        <Grid.Column textAlign='center'>
+                            <Header size='small'>Job offer: {jobOffer.name}</Header>
+                        </Grid.Column>
+                        <Grid.Column textAlign='center'>
+                            <Header size='small'>Description: {jobOffer.description}</Header>
+                        </Grid.Column>
+                        <Grid.Column textAlign='center'>
+                            <Header size='small'>Position: {jobOffer.position}</Header>
+                        </Grid.Column>
+                    </Grid.Row>
                     <Grid.Row columns={isHrManager ? 3 : 2}>
                         <Grid.Column textAlign='center'>
                             <p>Time: {time}</p>

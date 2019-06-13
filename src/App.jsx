@@ -3,7 +3,6 @@ import { Route } from "react-router-dom";
 import { connect } from "react-redux";
 import PropTypes from "prop-types";
 
-import HomePage from "./components/pages/HomePage";
 import JobsPage from "./components/pages/JobPage"
 
 import UserPage from "./components/pages/UserPage";
@@ -23,7 +22,7 @@ const App = ({ location, dispatch, history }) => (
     <div className="reactBody">
       <Header location={location} dispatch={dispatch} history={history}/>
       <div className='content'>
-        <Route location={location} path="/" exact component={HomePage}/>
+        <Route location={location} path="/" exact component={JobsPage}/>
         <Route location={location} path="/login" exact component={LoginPage}/>
         <Route location={location} path="/jobs" exact component={JobsPage}/>
         <PrivateRoute location={location} path="/user" component={UserPage}/>

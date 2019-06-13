@@ -57,6 +57,7 @@ class JobPage extends Component {
 
     getJobsCards = () => {
         const {jobs} = this.state;
+        const {isAuth, isCandidate} = this.props;
 
         return jobs.map((job, index) => {
             const {name, position, description} = job;
@@ -69,7 +70,7 @@ class JobPage extends Component {
                     </Grid.Column>
 
                     <Grid.Column verticalAlign='middle'>
-                        <Button index={index} size='big' fluid primary content='Apply for job offer'
+                        <Button index={index} size='big' disabled={!isAuth || !isCandidate} fluid primary content='Apply for job offer'
                                 onClick={this.offerModalOpen}/>
                     </Grid.Column>
                 </Grid>
@@ -78,7 +79,6 @@ class JobPage extends Component {
     };
 
     getOfferModal = () => {
-        const {isAuth} = this.props;
         const {jobModalData, jobModalOpen} = this.state;
         const {jobIndex, tests, id, name, position, description} = jobModalData;
 
@@ -108,7 +108,7 @@ class JobPage extends Component {
                 </Grid>
             </Modal.Content>
             <Modal.Actions>
-                {isAuth && <Button content='Submit' primary onClick={this.applyJobOffer}/>}
+                <Button content='Submit' primary onClick={this.applyJobOffer}/>
                 <Button content='Cancel' secondary onClick={this.offerModalClose}/>
             </Modal.Actions>
         </Modal>)
@@ -148,7 +148,9 @@ History.propTypes = {
 
 const mapStateToProps = (state) => ({
     isAuth: !!state.auth.token,
-    user: state.user
+    user: state.user,
+    isHrManager: state.user.role === "HR_MANAGER",
+    isCandidate: state.user.role === "CANDIDATE",
 });
 
 export default connect(mapStateToProps)(JobPage);
